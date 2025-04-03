@@ -14,6 +14,9 @@
     </header>
     <div class="container">
         <img src="{{ url_for('static', filename='images/signin.jpg') }}" alt="signin.jpg">
+        {% if error_message %}
+        <p style="color:red">{{error_message}}</p>
+        {% endif %}
         <h1>Sign In to Grocery Hub</h1>
         <form id="signin-form" method="POST" action="{{ url_for('signin') }}">
             <input type="text" id="email" name="email" placeholder="Email" required>
