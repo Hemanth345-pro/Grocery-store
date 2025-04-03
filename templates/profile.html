@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/header.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/footer.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/profile.css') }}">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/material-design-icons/3.0.1/material-icons.min.js"></script>
+    <title>FRB: Profile</title>
+</head>
+<body>
+  <header class="header">
+    <div class="container">
+      <div class="logo">
+        <!-- <a href="#"><img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo"></a> -->
+        <h2 ><a href="#"style="text-decoration: none; background-color: green;	color: white;padding: 9px; border-radius: 25px;">Grocery Hub</a></h2>
+      </div>
+      <div class="menu-toggle">
+        <i class="material-icons">menu</i>
+      </div>
+      <nav class="show-menu">
+        <ul>
+          <li><a href="{{ url_for('home') }}">Home</a></li>
+          <li><a href="{{ url_for('products') }}">Shop</a></li>
+          <li>
+            <form action="/search" method="GET">
+              <input type="search" name="query" placeholder="Search the grocery shop...">
+              <button style="background-color: green;" type="submit"><i class="material-icons">search</i></button>
+            </form>
+          </li>
+        </ul>
+      </nav>
+      <div class="user">
+        <div class="profile">
+          <a href="{{ url_for('profile') }}"><i class="material-icons icon-large">account_circle</i>Account</a>
+        </div>
+        <div class="cart">
+          <a href="{{ url_for('cart') }}">
+            <i class="material-icons">shopping_cart</i>
+            {% if cart_count > 0 %}
+            <span id="cart-count">{{ cart_count }}</span>
+            {% endif %}
+          </a>
+        </div>
+      </div>
+    </div>
+  </header>
+    <h1>Profile</h1>
+    <div class="profile-container">
+        <span class="material-icons icon-large">account_circle</span>
+        <h2>Welcome, {{ user[1] }}!</h2>
+        <p>Email: {{ user[2] }}</p>
+        <p>Phone: {{ user[4] }}</p>
+        {% for ship in shipping_info %}
+          <h2>Shipping Information</h2>
+          <p>Full Name: {{ ship[2] }}</p>
+          <p>Street Address: {{ ship[3] }}</p>
+          <p>City: {{ ship[4] }}</p>
+          <p>State/Province: {{ ship[5] }}</p>
+          <p>Postal Code: {{ ship[6] }}</p>
+          <p>Country: {{ ship[7] }}</p>
+        {% endfor %}
+        <form action="/signout">
+          <button style="background-color: green;">SignOut</button>
+        </form>
+    </div>
+ 
+</body>
+</html>

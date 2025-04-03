@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Icons" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/confirm.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/header.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/footer.css') }}">
+    <title>FRB: Order Confirmation</title>
+    <style>
+      .download_in:hover {
+        background-color: #e03d1e;
+      }
+    </style>
+    <script>
+      function tableToJson() {
+          let table = document.getElementById("invoiceTable");
+          let rows = table.rows;
+          let jsonData = [];
+
+          for (let i = 0; i < rows.length; i++) {
+              let rowData = [];
+              let cells = rows[i].cells;
+              for (let j = 0; j < (cells.length); j++) {
+                  if (!cells[j].classList.contains("exclude")) { // Ignore columns with class 'exclude'
+                  rowData.push(cells[j].innerText.trim());
+          }
+              }
+              jsonData.push(rowData);
+          }
+
+          fetch('/convert', {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({ invoice: jsonData })
+          })
+          .then(response => response.blob())
+          .then(blob => {
+              let link = document.createElement('a');
+              link.href = URL.createObjectURL(blob);
+              link.download = 'invoice.pdf';
+              link.click();
+          })
+          .catch(error => console.error('Error:', error));
+      }
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="container">
+      <div class="logo">
+        <!-- <a href="#"><img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo"></a> -->
+        <h2 ><a href="#"style="text-decoration: none; background-color: green;	color: white;padding: 9px; border-radius: 25px;">Grocery Hub</a></h2>
+      </div>
+      <div class="menu-toggle">
+        <i class="material-icons">menu</i>
+      </div>
+      <nav class="show-menu">
+        <ul>
+          <li><a href="{{ url_for('home') }}">Home</a></li>
+          <li><a href="{{ url_for('products') }}">Shop</a></li>
+          <li>
+            <form action="/search" method="GET">
+              <input type="search" name="query" placeholder="Search the grocery shop...">
+              <button style="background-color: green;" type="submit"><i class="material-icons">search</i></button>
+            </form>
+          </li>
+        </ul>
+      </nav>
+      <div class="user">
+        <div class="profile">
+          <a href="{{ url_for('profile') }}"><i class="material-icons icon-large">account_circle</i>Account</a>
+        </div>
+        <div class="cart">
+          <a href="{{ url_for('cart') }}">
+            <i class="material-icons">shopping_cart</i>
+            {% if cart_count > 0 %}
+            <span id="cart-count">{{ cart_count }}</span>
+            {% endif %}
+          </a>
+        </div>
+      </div>
+    </div>
+  </header>
+  <h1>Thank You For Shopping. Order Confirmed</h1>
+  <div class="order-items">
+    <h2>Invoice ID: {{ order_id }}</h2>
+    <table id="invoiceTable">
+        <tr>
+          <th>Name</th>
+          <th>Category</th>
+          <th>Price</th>
+          <th class="exclude">Description</th>
+          <!-- <th>Image</th> -->
+        </tr>
+      
+        {% for product in order_products %}
+        <tr>
+          <td>{{ product[1] }}</td>
+          <td>{{ product[5] }}</td>
+          <td>{{ product[3] }}</td>
+          <td class="exclude">{{ product[2] }}</td>
+          <!-- <td><img src="{{ url_for('static', filename=product[4]) }}" alt="{{ product[1] }}" width="100"></td> -->
+        </tr>
+        {% endfor %}
+        <tr>
+          <td></td>
+          <td><strong>Total Amount:</strong></td>
+          <td>{{ total_price }}</td>
+          <td></td>
+        </tr>
+      
+    </table>
+    <p>Total Amount: {{ total_price }}</p>
+  </div>
+  <div class="ship-container">
+    {% for ship in shipping_info %}
+    <h2>Shipping Information</h2>
+    <p>Full Name: {{ ship[2] }}</p>
+    <p>Street Address: {{ ship[3] }}</p>
+    <p>City: {{ ship[4] }}</p>
+    <p>State/Province: {{ ship[5] }}</p>
+    <p>Postal Code: {{ ship[6] }}</p>
+    <p>Country: {{ ship[7] }}</p>
+    {% endfor %}
+  </div>
+  <div style="    display: flex; justify-content: center;">
+  <form action="{{ url_for('home') }}" >
+      <button style="background-color: green;" type="submit">Return to HomePage</button>
+    </form>
+    <!-- <a style="padding: 10px 20px;background-color: #f55536;color: #fff;border: none;border-radius: 3px;  cursor: pointer;  font-size: 16px;text-decoration: none;" href="tableToJson()" >Download Invoice</a> -->
+    <button class="download_in"  onclick='tableToJson()' style="margin-top: 1.5%;padding: 10px 20px;background-color: green;color: #fff;border: none;border-radius: 3px;  cursor: pointer;  font-size: 16px;text-decoration: none;    margin-left: 1%; " >Download invoice</button>
+  </div>
+
+</body>
+</html>

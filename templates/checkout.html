@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Icons" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/checkout.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/header.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/footer.css') }}">
+    <title>Fresh Basket: Checkout</title>
+</head>
+<body>
+  <div class="body-container">
+    <h1>Payment Checkout</h1>
+    <div class="payment-container">
+      <h2>Payment</h2>
+      <!-- <div class="payment-img"></div> -->
+      <p><b>Total Price: ₹ {{ total_price }}</b></p>
+    </div>
+    <div class="ship-container">
+      {% for ship in shipping_info %}
+      <h2>Shipping Information</h2>
+      <p>Full Name: {{ ship[2] }}</p>
+      <p>Street Address: {{ ship[3] }}</p>
+      <p>City: {{ ship[4] }}</p>
+      <p>State/Province: {{ ship[5] }}</p>
+      <p>Postal Code: {{ ship[6] }}</p>
+      <p>Country: {{ ship[7] }}</p>
+      {% endfor %}
+    </div>
+    <div class="content-container">
+      <h2>Order Items</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Price</th>
+            <!-- <th>Image</th> -->
+            <th>Category</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for product in cart_products %}
+          <tr>
+            <td>{{ product[0] }}</td>
+            <td><b>{{ product[1] }}</b></td>
+            <td>{{ product[2] }}</td>
+            <td>₹ {{ product[3] }}</td>
+            <!-- <td><img src="{{ url_for('static', filename=product[4]) }}" alt="{{ product[1] }}"></td> -->
+            <td>{{ product[5] }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      <p>Total Price: ₹ {{ total_price }}</p>
+    </div>
+    <div class="buttons-container">
+      <form class="total-price" action="{{ url_for('place_order') }}" method="POST">
+        <button style="background-color:green ;" type="submit">Place Order</button>
+      </form>
+      <form action="{{ url_for('products') }}">
+        <button style="background-color:green ;" type="submit">Continue Shopping</button>
+      </form>
+    </div>
+  </div>
+ 
+</body>
+</html>

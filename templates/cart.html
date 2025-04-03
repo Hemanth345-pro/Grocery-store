@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Icons" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/cart.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/header.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/footer.css') }}">
+    <title>Fresh Basket: Cart</title>
+</head>
+<body>
+    <h1>Cart</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Price</th>
+                <!-- <th>Image</th> -->
+                <th>Category</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for product in cart_products %}
+            <tr>
+                <td>{{ product[0] }}</td>
+                <td><b>{{ product[1] }}</b></td>
+                <td>{{ product[2] }}</td>
+                <td>₹ {{ product[3] }}</td>
+                <!-- <td><img src="{{ url_for('static', filename=product[4]) }}" alt="{{ product[4] }}"></td> -->
+                <td>{{ product[5] }}</td>
+                <td>
+                    <form action="{{ url_for('remove_from_cart') }}" method="POST">
+                        <input type="hidden" name="product_id" value="{{ product[0] }}">
+                        <button type="submit">Remove</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <p class="total-price">Total Price: ₹ {{ total_price }}</p>
+
+    <div class="buttons">
+        <form action="{{ url_for('shipping') }}" method="GET">
+            <button type="submit">Proceed to Checkout</button>
+        </form>
+        <form action="{{ url_for('products') }}">
+            <button type="submit">Continue Shopping</button>
+        </form>
+    </div>
+
+</body>
+</html>
